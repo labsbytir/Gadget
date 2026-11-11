@@ -78,23 +78,30 @@ function initProject(dir) {
 export default {
   id: "gadget",
   async setup(ctx) {
-    const tool = {
-      description: "Initialize the current project as a Gadget project: RAG config, AGENTS.md, gitignore, pre-commit preflight, GitHub Actions sync, git init/commit, memory-graph hint.",
-      input: {
-        type: "object",
-        properties: {
-          directory: { type: "string", description: "Project directory; defaults to cwd" }
-        }
+    const input = {
+      type: "object",
+      properties: {
+        directory: { type: "string", description: "Project directory; defaults to the current project" }
       },
-      async execute(args) {
-        const dir = args.directory || process.cwd();
-        const done = initProject(dir);
-        return { content: [{ type: "text", text: "Gadget init complete in " + dir + ":\n- " + done.join("\n- ") + "\n\nNext: run /index (open-codebase-index) and open the Memory Graph extension, then Retry." }] };
-      }
+      additionalProperties: false
     };
-    if (ctx && ctx.tools && typeof ctx.tools.register === "function") ctx.tools.register("gadget_init", tool);
-    else if (ctx && typeof ctx.registerTool === "function") ctx.registerTool("gadget_init", tool);
-    else if (Array.isArray(ctx?.tools)) ctx.tools.push(tool);
+    const description = "Initialize the current project as a Gadget project: RAG config, AGENTS.md, gitignore, pre-commit preflight, GitHub Actions sync, git init/commit, memory-graph hint.";
+    const execute = async (args, toolContext) => {
+      const dir = args?.directory || toolContext?.directory || ctx?.location?.directory || process.cwd();
+      const done = initProject(dir);
+      return {
+        content: [{
+          type: "text",
+          text: "Gadget init complete in " + dir + ":\n- " + done.join("\n- ") +
+            "\n\nNext: run /index (open-codebase-index) and open the Memory Graph extension, then Retry."
+        }]
+      };
+    };
+    if (ctx?.tool?.transform) {
+      await ctx.tool.transform((editor) => editor.add({ name: "gadget_init", description, input, execute }));
+    } else if (typeof ctx?.registerTool === "function") {
+      ctx.registerTool("gadget_init", { description, input, execute });
+    }
   }
 };
 
