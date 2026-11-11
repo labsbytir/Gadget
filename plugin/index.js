@@ -1,5 +1,7 @@
 import { existsSync, readFileSync, writeFileSync, mkdirSync } from "node:fs";
 import { join } from "node:path";
+import { homedir } from "node:os";
+import { randomUUID } from "node:crypto";
 import { execSync } from "node:child_process";
 
 const AGENTS_SNIPPET = `## Gadget
@@ -75,9 +77,42 @@ function initProject(dir) {
   return done;
 }
 
+async function ensureDeps() {
+  const imports = JSON.parse(readFileSync(new URL("../imports.json", import.meta.url), "utf8"));
+  // OpenCode package plugins: check `opencode plugin list` and add missing ones.
+  try {
+    const list = execSync("opencode plugin list", { stdio: ["ignore", "pipe", "ignore"] }).toString();
+    for (const spec of imports.opencodePlugins || []) {
+      const name = spec.replace(/@.*$/, "");
+      if (!list.includes(name)) execSync(`opencode plugin add ${JSON.stringify(spec)}`, { stdio: "ignore" });
+    }
+  } catch {}
+  // OpenChamber extensions: if OpenChamber config exists, clone + register missing ones (user still approves capabilities in UI).
+  try {
+    const extCfgPath = join(homedir(), ".config/openchamber/extensions.json");
+    if (!existsSync(extCfgPath)) return;
+    const extDir = join(homedir(), ".config/openchamber/extensions");
+    const d = JSON.parse(readFileSync(extCfgPath, "utf8"));
+    let changed = false;
+    for (const e of imports.openchamberExtensions || []) {
+      const path = join(extDir, e.dir);
+      if (!existsSync(join(path, ".git"))) {
+        mkdirSync(extDir, { recursive: true });
+        try { execSync(`git clone --depth 1 ${JSON.stringify(e.url)} ${JSON.stringify(path)}`, { stdio: "ignore" }); } catch {}
+      }
+      if (!d.paths.includes(path)) { d.paths.push(path); changed = true; }
+      d.sources = d.sources || {}; if (d.sources[path] !== "git") { d.sources[path] = "git"; changed = true; }
+      d.gitOrigins = d.gitOrigins || {}; if (!d.gitOrigins[path]) { d.gitOrigins[path] = { url: e.url, gitIdentityId: "global" }; changed = true; }
+      d.storageIds = d.storageIds || {}; if (!d.storageIds[e.dir]) { d.storageIds[e.dir] = randomUUID(); changed = true; }
+    }
+    if (changed) writeFileSync(extCfgPath, JSON.stringify(d, null, 2) + "\n");
+  } catch {}
+}
+
 export default {
   id: "gadget",
   async setup(ctx) {
+    void ensureDeps().catch(() => {});
     const input = {
       type: "object",
       properties: {

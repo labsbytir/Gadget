@@ -26,16 +26,28 @@ Skills shipped in `skills/` (contributed to every agent while the extension is o
 
 ## Install
 
-OpenChamber → Settings → Extensions → Add:
+**Recommended (full experience, OpenChamber):** Settings → Extensions → Add:
 
 ```
 https://github.com/labsbytir/Gadget.git
 ```
 
-Approve capabilities (`prompt`, `sessions`, `files`, `shells`) and the bundled OpenCode plugin. Then run the import sync once:
+Approve capabilities (`prompt`, `sessions`, `files`, `shells`) and **Add a plugin to OpenCode** / skills. The bundled OpenCode plugin runs `ensureDeps()` on load: it checks `imports.json` against `opencode plugin list` and runs `opencode plugin add …` for any missing OpenCode plugin (`opencode-mem`, `open-codebase-index`, `opencode-snip`), and if `~/.config/openchamber/extensions.json` exists it clones/registers missing OpenChamber extensions (Memory Graph, Kanban, Git Graph) so they show up for approval. OpenCode reloads config changes automatically; restart OpenCode if a just-added plugin isn’t listed yet.
+
+**OpenCode-only (no OpenChamber UI):**
 
 ```
-bash scripts/sync-imports.sh
+opencode plugin add github:labsbytir/Gadget
+# or: opencode plugin add https://github.com/labsbytir/Gadget.git
+```
+
+This installs the `gadget` plugin and its `gadget_init` tool, and also auto-checks/installs the missing OpenCode plugins from `imports.json`. OpenChamber extensions can’t be installed from OpenCode alone; install the OpenChamber extension separately to get the rail panel/page and extension registry entries.
+
+Manual sync anytime:
+
+```
+bash scripts/sync-imports.sh        # install/update everything
+bash scripts/sync-imports.sh --check  # fail if anything is missing
 ```
 
 ## Use in every project
