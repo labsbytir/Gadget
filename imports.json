@@ -1,0 +1,17 @@
+{
+  "opencodePlugins": [
+    "opencode-mem",
+    "open-codebase-index",
+    "opencode-snip@latest"
+  ],
+  "openchamberExtensions": [
+    {
+      "dir": "openchamber-memory-graph-ui",
+      "url": "https://github.com/yulimfish/openchamber-memory-graph-ui.git"
+    },
+    {
+      "dir": "gadget",
+      "url": "https://github.com/labsbytir/Gadget.git"
+    }
+  ]
+}

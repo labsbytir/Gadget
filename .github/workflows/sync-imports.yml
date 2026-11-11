@@ -1,0 +1,19 @@
+name: sync-imports
+on:
+  schedule:
+    - cron: "0 6 * * 1"
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Install OpenCode CLI
+        run: npm install -g @openchamber/opencode-cli 2>/dev/null || npm install -g opencode 2>/dev/null || true
+      - name: Check imports are installed
+        run: bash scripts/sync-imports.sh --check

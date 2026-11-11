@@ -1,0 +1,30 @@
+{
+  "name": "@labsbytir/gadget",
+  "version": "0.1.0",
+  "description": "OpenChamber extension + OpenCode plugin that initializes every project as a Gadget project: memory graph, codebase RAG index, git/GitHub setup, pre-commit preflight, and the full skill set.",
+  "license": "GPL-3.0",
+  "type": "module",
+  "openchamber": {
+    "apiVersion": 1,
+    "engines": {
+      "openchamber": ">=1.24.0"
+    },
+    "id": "gadget",
+    "name": "Gadget",
+    "icon": "robot",
+    "contributes": {
+      "panel": {
+        "entry": "panel/index.html"
+      },
+      "page": true,
+      "attach": "panel",
+      "capabilities": ["prompt", "sessions", "files", "shells"],
+      "skills": "skills",
+      "opencodePlugin": "plugin"
+    }
+  },
+  "scripts": {
+    "sync-imports": "bash scripts/sync-imports.sh",
+    "check": "bash scripts/sync-imports.sh --check && node plugin/index.js --selftest"
+  }
+}
