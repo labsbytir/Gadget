@@ -1,6 +1,6 @@
 # Gadget
 
-OpenChamber extension + OpenCode plugin that turns every project into a **Gadget project**: an agent named Gadget (chief of staff) that is initialized per project and keeps the memory graph, codebase RAG, git/GitHub, pre-commit preflight, and skill set in sync.
+Open-source (**GPL-3.0**, public repo — anyone can use, fork, and contribute) OpenChamber extension + OpenCode plugin that turns every project into a **Gadget project**: an agent named Gadget (chief of staff) that is initialized per project and keeps the memory graph, codebase RAG, git/GitHub, pre-commit preflight, and skill set in sync.
 
 ## What it installs
 
@@ -67,3 +67,10 @@ Then:
 - In GitHub: `.github/workflows/sync-imports.yml` runs weekly and on demand; `--check` fails if an import is missing.
 
 Compatible with https://opencode.ai/docs/plugins/, https://docs.openchamber.dev/sdk/, and https://github.com/Helweg/open-codebase-index.
+
+## License & contributing
+
+- License: **GNU GPL v3.0** (`LICENSE`). Use it, fork it, improve it — contributions welcome.
+- See `CONTRIBUTING.md` for the workflow, `CODE_OF_CONDUCT.md` for behavior, `SECURITY.md` for reporting vulnerabilities.
+- Issues and PRs are enabled on https://github.com/labsbytir/Gadget with issue/PR templates. CI (`ci.yml`) and weekly import sync (`sync-imports.yml`) run in GitHub Actions.
+- To add another importable plugin/extension, add it to `imports.json` and run `bash scripts/sync-imports.sh`.
