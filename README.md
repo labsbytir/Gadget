@@ -13,7 +13,14 @@ OpenCode plugins (global, via `scripts/sync-imports.sh` and `imports.json`):
 OpenChamber extensions:
 
 - `openchamber-memory-graph-ui` — Memory Graph rail panel/full page for opencode-mem
-- `gadget` — this repo
+- `gadget` — this repo (rail panel + full page + OpenCode plugin + skills)
+- `kanban-board` — https://github.com/mannu150/openchamber-kanban
+- `openchamber-git-graph` — https://github.com/MltStephane/openchamber-git-graph
+
+Agent + automation:
+
+- OpenCode agent **`gadget`** is registered in `~/.config/opencode/opencode.json`; pick its default model in **Settings → Agents** from your enabled OpenCode providers/models.
+- A user-scope loop `~/.agents/loops/gadget-start.md` runs Gadget every 5 minutes in every project (edit `model`/`agent`/`schedule` there; enable/disable in Scheduled Tasks). It runs `gadget_init` if needed, keeps RAG + memory graph up, updates project todos/plans via the project knowledge tool, and syncs Kanban with task progress.
 
 Skills shipped in `skills/` (contributed to every agent while the extension is on): `code-review`, `codebase-design`, `domain-modeling`, `grilling`, `grill-with-docs`, `improve-codebase-architecture`, `ponytail`, `pr`, `research`, `scaffold-exercises`, `setup-pre-commit`, `tdd`, `wayfinder`, `wizard`, `writing-for-agents`.
 

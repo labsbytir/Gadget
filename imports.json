@@ -12,6 +12,14 @@
     {
       "dir": "gadget",
       "url": "https://github.com/labsbytir/Gadget.git"
+    },
+    {
+      "dir": "kanban-board",
+      "url": "https://github.com/mannu150/openchamber-kanban.git"
+    },
+    {
+      "dir": "openchamber-git-graph",
+      "url": "https://github.com/MltStephane/openchamber-git-graph.git"
     }
   ]
 }
