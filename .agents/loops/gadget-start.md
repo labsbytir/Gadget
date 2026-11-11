@@ -1,7 +1,7 @@
 ---
 name: gadget-start
 schedule: "*/5 * * * *"
-enabled: true
+enabled: false
 model: opencodex/gpt-5.6-sol
 agent: gadget
 timezone: Europe/London
